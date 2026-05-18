@@ -11,7 +11,7 @@ LMSGI_UD07_Espejo_Martinez_Jorge
 
 # manual_explotacion_willmantech.md
 
-## Generación del Informe Dinámico (QWeb XML)
+## I. Generación del Informe Dinámico (QWeb XML)
 
 Se debe diseñar y programar la estructura XML de una plantilla de informe de factura personalizada para "WillmanTech S.L." utilizando la sintaxis de **QWeb**.
 
@@ -22,14 +22,14 @@ Requisitos mínimos del archivo report\_invoice\_willmantech.xml:
 3. **Lógica condicional:** Debe implementar una condición (t-if) para ocultar la columna de "Descuento" en caso de que ninguna de las líneas de detalle de la factura lo contenga.  
 4. **Data Binding:** Utilizar la directiva t-field para mostrar de forma limpia campos como el número de factura (doc.name), fecha de emisión (doc.date) y el total neto (doc.amount\_total).
 
-## Interoperabilidad de Datos (Extracción JSON/XML)
+## II. Interoperabilidad de Datos (Extracción JSON/XML)
 
 Para permitir que las facturas de "**WillmanTech S.L.**" se incorporen a la plataforma de la Agencia Tributaria o se sincronicen con sistemas contables externos de manera asíncrona, se debe definir las estructuras de intercambio de datos. Por ello se necesita:
 
 1. **invoice\_export.json:** Un archivo que contenga un array estructurado con la información de una factura de ejemplo recuperada dinámicamente mediante una consulta al ERP. Debe contener campos relacionales anidados (ID de cliente, nombre, email, líneas de producto, precios y base imponible).  
 2. **invoice\_ubl.xml:** Un fragmento de factura electrónica simplificado que cumpla con las especificaciones del estándar internacional **UBL (Universal Business Language)**, incluyendo obligatoriamente los namespaces de componentes agregados (cac) y componentes básicos (cbc), así como el ID de personalización europeo compatible con la red PEPPOL.
 
-## Manual de Explotación bajo Norma ISO/IEC/IEEE 26514
+## III. Manual de Explotación bajo Norma ISO/IEC/IEEE 26514
 
 Este es el documento técnico que servirá de guía para los administradores de sistemas y usuarios finales que exploten el ERP de "**WillmanTech S.L.**" Este documento se estructurará siguiendo los requisitos de calidad y usabilidad del estándar internacional **ISO/IEC/IEEE 26514:2022**.
 
@@ -45,3 +45,5 @@ Configuración de roles (administrador, contable, comercial), políticas de cont
 Detalle del comando para respaldar la base de datos relacional y los almacenes de datos asociados.
 ### 5. **Flujo Operativo de Facturación e Informes:**
 Explicación paso a paso de cómo un usuario genera una factura en la interfaz y cómo el sistema renderiza el informe final a PDF (explicando de manera didáctica el pipeline HTML \-\> wkhtmltopdf \-\> PDF).
+
+## IV. Uso de IA
