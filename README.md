@@ -2,7 +2,7 @@
 Aquí se desarrollará la UD07_03_SistemasGestionEmpresarialAEE donde la empresa andaluza de servicios tecnológicos "WillmanTech S.L." acaba de finalizar la implantación de su infraestructura ERP/CRM para optimizar sus flujos de ventas y facturación.
 
 Estructura:
-LMSGI_UD07_Espejo_Martinez_Jorge
+LMSGI_UD07_Espejo_Martinez_Jorge  
   ├── report\_invoice\_willmantech.xml  
   ├── interoperabilidad/  
   │   ├── invoice\_export.json           
@@ -36,14 +36,81 @@ Este es el documento técnico que servirá de guía para los administradores de 
 El manual (manual\_explotacion\_willmantech.md o README.md) incluye las siguientes secciones:
 
 ### 1. **Introducción y Arquitectura:**
-Descripción técnica de los módulos activados en el ERP, indicando la topología lógica (ej. despliegue mediante Docker Compose).
+Módulos activados en el ERP, son:  
+- Ventas (Sales)  
+- Facturación (Invoicing/Accounting)  
+- Inventario (Inventory)  
+Topología lógica  
+El sistema se despliega mediante Docker Compose con dos contenedores principales: un servidor Odoo (puerto 8200) y la  base de datos de Odoo (puerto 8069).
 ### 2. **Guía de Instalación y Reinstalación:**
-Pasos detallados para levantar el entorno desde cero, indicando variables de entorno necesarias y dependencias del SGBD.
+Requisitos previos:  
+Docker y Docker Compose instalados  
+Git (para clonar el repositorio)  
+4GB RAM mínimo, 8GB recomendado  
+
+Pasos detallados:  
+1. Clonar el repositorio
+git clone https://github.com/enlace.git
+cd odoo-docker
+
+2. Crear archivo .env con variables de entorno
+cat > .env << EOF
+POSTGRES_DB=willmantech
+POSTGRES_USER=odoo
+POSTGRES_PASSWORD=contraseña
+ODOO_ADMIN_PASSWORD=admin_password
+EOF
+
+3. Levantar contenedores
+docker-compose up -d
+
+4. Verificacion
+docker-compose ps
+docker-compose logs odoo
+
+Variables de entorno necesarias:  
+POSTGRES_DB: Nombre de la base de datos
+POSTGRES_USER: Usuario de PostgreSQL
+POSTGRES_PASSWORD: Contraseña
+ODOO_ADMIN_PASSWORD: Contraseña Admin
+
+Dependencias del SGBD:  
+PostgreSQL 15 o superior
+Extensión uuid-ossp habilitada
+
+Reinstalación: detener los contenedores, eliminar los volúmenes (docker-compose down -v) y repetir los pasos.
 ### 3. **Seguridad y Control de Acceso:**
 Configuración de roles (administrador, contable, comercial), políticas de contraseñas y privilegios sobre la información.
+| **Rol**   | **Permisos** | **Módulos** |
+|-----------|--------------|-------------|
+| Admin     | Acceso completo a todos los módulos y configuración del sistema | Todos |
+| Contable  | Facturación completa, pagos, informes contables | Facturación, Contabilidad |
+| Comercial | Crear/editar presupuestos, confirmar pedidos, solo lectura en facturación | Ventas |
+| Almacén   | Gestión de entradas/salidas de inventario | Inventario |
+| Usuario   | Solo consulta de facturas y pedidos | Portal |  
+
+Cómo configurar los roles en Odoo:  
+Ir a Ajustes → Usuarios y Compañías → Usuarios
+Crear nuevo usuario o editar existente
+En la pestaña "Derechos de acceso", asignar los grupos correspondientes 
+Los administradores tienen el grupo "Ajustes" habilitado
+
+Políticas de contraseñas:  
+Longitud mínima: 8 caracteres
+Requiere mayúsculas, minúsculas, números y símbolos
+Caducidad: 90 días
+Historial: no repetir las últimas 5 contraseñas
+
+Privilegios sobre la información:  
+Reglas por registro: los comerciales solo ven sus propios clientes 
+Los contables ven todas las facturas pero no pueden modificar pedidos de venta 
 ### 4. **Procedimiento de Backup y Restauración:**
 Detalle del comando para respaldar la base de datos relacional y los almacenes de datos asociados.
 ### 5. **Flujo Operativo de Facturación e Informes:**
 Explicación paso a paso de cómo un usuario genera una factura en la interfaz y cómo el sistema renderiza el informe final a PDF (explicando de manera didáctica el pipeline HTML \-\> wkhtmltopdf \-\> PDF).
-
-## IV. Uso de IA
+1. Ir a la aplicación Facturación
+2. Crear nueva factura (Crear → Factura)
+3. Seleccionar cliente
+4. Añadir líneas de producto (descripción, cantidad, precio)
+5. Validar la factura (botón "Confirmar")
+6. Hacer clic en Imprimir → Factura
